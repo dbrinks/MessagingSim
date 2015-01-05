@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messaging Sim</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html{
+            font-family: sans-serif;
+        }
+
+        #sim-configuration{
+            position: absolute;
+            top: 1em;
+            left: 1em;
+            width: 20em;
+            padding: .5em 0;
+            background: rgba(0,0,0,.2);
+            border: 1px solid #888;
+        }
+
+        .row:after{
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .cell{
+            float:left;
+            width: 66%;
+            padding: 0 .5em;
+        }
+
+        .cell.label {
+            width: 33%;
+            text-align: right;
+        }
+
+        .cell input,
+        .cell select{
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div id="sim-configuration">
+        <div class="row">
+            <div class="cell label">
+                <label for="clusters">Clusters</label>
+            </div>
+            <div class="cell">
+                <select id="clusters">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+        </div>
+
+    </div> -->
+
+    <!-- Eventually move this to NOT point at the src directory...-->
+    <button id="start-sim">Start</button>
+    <button id="stop-sim">Stop</button>
+    <button id="reset-sim">Reset</button>
+
+    <script data-main="js/main.js" src="../src/lib/require.js"></script>
+</body>
+</html>

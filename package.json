@@ -1,0 +1,24 @@
+{
+  "name": "MessagingSim",
+  "version": "0.1.0",
+  "description": "An example module to illustrate the usage of a package.json",
+  "author": "Devon Brinks <brinks.d@gmail.com>",
+  "contributors": [{
+    "name": "Devon Brinks",
+    "email": "brinks.d@gmail.com"
+  }],
+  "main": "src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dbrinks/MessagingSim"
+  },
+  "dependencies": {
+    "requirejs": "~2.1.0",
+    "grunt": "~0.4.0",
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-watch": "~0.6.0",
+    "grunt-contrib-uglify": "~0.7.0"
+  },
+  "private": true
+}
