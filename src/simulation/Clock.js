@@ -4,14 +4,66 @@ define([
     EventBus
 ){
     "use strict";
-    
+
+    var MS_PER_TICK = 10;
+
     function Clock(){
         this._tock = 0;
         this._watchers = [];
         this._continue = true;
+
+        this._events = {};
+        this._tickQueue = [];
+
+        this._bindEvents();
     }
 
     Clock.prototype = {
+
+        _bindEvents: function(){
+            EventBus.subscribe("register-clock-event", this.registerEvent.bind(this));
+        },
+
+        registerEvent: function(event){
+            var registeredEvent = this._events[event.tick];
+
+            if(registeredEvent){
+                registeredEvent.push(event.action);
+            }else{  
+                this._events[event.tick] = [event.action];
+                this._tickQueue.push(event.tick);
+
+                // definitely a more efficient way of doing this.  
+                // But this works for now
+                this._tickQueue = this._tickQueue.sort();
+            }
+        },
+
+        startDES: function(){
+            var tick = this._tickQueue.shift(),
+                actions = this._events[tick];
+
+            
+
+            for(var i = 0; i < actions.length; i++){
+                setTimeout(function(){
+
+                }, tick * MS_PER_TICK);
+            }
+
+            delete this._events[tick];
+        },
+
+        nextTime: function(time){
+            var actions = this._events[time];
+
+            for(var i = 0; i < actions.length; i++){
+                actions[i]();
+            }
+
+            delete this._events[time];
+        },
+
         _tick: function(){
             var hasMoreWork = false;
 

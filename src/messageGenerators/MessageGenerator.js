@@ -41,42 +41,38 @@ define([
         },
 
         _calculateNextMessageEmission: function(tick){
-            var waitTime = MathHelper.getRandomNumberInInterval(this._minEmissionWait, this._maxEmissionWait);
-            this._nextEmission = (tick || 0) + waitTime;
+            var waitTime = MathHelper.getRandomNumberInInterval(this._minEmissionWait, this._maxEmissionWait),
+                nextEmission = (tick || 0) + waitTime;
 
             // Double check to ensure we don't get hung up...
-            if(this._nextEmission < tick){
-                this._nextEmission  = tick + 1;
+            if(nextEmission < tick){
+                nextEmission  = tick + 1;
             }
+
+            EventBus.publish("register-clock-event", {
+                tick: nextEmission,
+                action: this.generateMessage.bind(this)
+            });
         },
 
         getName: function(){
             return "Generator-" + this.id;
         },
 
-        run: function(tick){
-            var messagesRemaining = this._totalMessages !== this._messagesEmitted;
-
-            if(!messagesRemaining){
-                return false;
-            }
-
-            if(this._nextEmission === tick){
-                var message = this._messageFactory.get(this._generateMessageConfig(tick));
-
-                Logger.activity(message.getName() + " has been emitted by " + this.getName());
-
-                EventBus.publish(this._messageType + ":created", message);
-
-                this._calculateNextMessageEmission(tick);
-                this._messagesEmitted++;
-            }
-
-            if(!messagesRemaining){
+        generateMessage: function(tick){
+            if(this._totalMessages !== this._messagesEmitted){
                 Logger.activity(this.getName() + " has emitted " + this._totalMessages + " messages");
+                return;
             }
 
-            return messagesRemaining;
+            var message = this._messageFactory.get(this._generateMessageConfig(tick));
+
+            Logger.activity(message.getName() + " has been emitted by " + this.getName());
+
+            EventBus.publish(this._messageType + ":created", message);
+
+            this._calculateNextMessageEmission(tick);
+            this._messagesEmitted++;
         },
 
         destroy: function(){

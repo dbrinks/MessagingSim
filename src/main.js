@@ -29,7 +29,7 @@ function(
         messageConfigurations: [
             {
                 messageType: "one", // key corresponds to messageType
-                totalMessages: 200, // total number to be created
+                totalMessages: 2000, // total number to be created
                 frequency: 5, // new one every 5 
                 frequencyVariation: 3, // how often the messages are created
                 processingTime: 10, // 10 ticks to complete
@@ -46,9 +46,13 @@ function(
         if(currentSim){
             currentSim.destroy();
         }
-        currentSim = SimulationEngineFactory.get(configuration);
 
-        currentSim.start();
+        // Finish off the event before starting.  Avoids locking up the screen
+        setTimeout(function(){
+            currentSim = SimulationEngineFactory.get(configuration);
+
+            currentSim.start();
+        }, 1);
     }, false);
 
     stop.addEventListener("click", function(){
@@ -70,6 +74,23 @@ function(
 /*
 
 TODOs:
+
+    - Refactor
+        - Use descrete event simulation
+            - Instead of constantly looping for EVERY tick, where we aren't doing anything
+                for most ticks, just run for the ticks that we know have an action.
+            - For UI purposes, we can set delays between events
+                - 42 ticks until the next event? wait X amount of time
+                    - Maybe t * m to calculate deplay?
+                        - t = ticks
+                        - m = milliseconds/tick
+            - Clock is completely decoupled.
+                - Events are fired to let the clock know that something needs to do work
+                    at a predetermined time
+                    - Message Generator - Calculates when the next message is sent if it still has messages.
+                    - Load Balancer - Calculates when it can distribute a message when a message is added to its queue.
+                    - Host - Calculates when the message will be done processing and subsequent message generated.
+
     - UI
         - Very basic debug UI 
             - would be nice so I don't have ot keep using console.log
@@ -102,6 +123,8 @@ TODOs:
         - Hosts don't watch the clock. Register hosts with a clock watcher
             - Reduces the number of clock watchers to one
             - Host clock watcher will get all hosts who are done processing at a certain tick and tell them to get the next message
+        - UI locks when it's a 'long' simulation
+            - setTimeout... wooo...
 
     - Extensibility
         - Registration

@@ -1,17 +1,17 @@
 define(function(){
     var _times = {};
 
-    function now(){
+    function _now(){
         return new Date().getTime();
     }
 
     return {
         start: function(name){
-            _times[name] = now();
+            _times[name] = _now();
         },
 
         end: function(name){
-            var difference = now() - _times[name];
+            var difference = _now() - _times[name];
 
             delete _times[name];
 

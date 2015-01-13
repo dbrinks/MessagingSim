@@ -3,7 +3,7 @@ define([
 ],function(
     EventBus
 ){
-    var _log = {},
+    var _log = [],
         isLogging = false,
         isLoggingToConsole = false,
         isStreaming = false;
@@ -25,25 +25,13 @@ define([
             isStreaming = isStreamParam;
         },
 
-        log: function(name, value, extraProperties){
-            var metricObj = {
-                value: value, 
-                properties: extraProperties
-            };
+        log: function(name, value){
+            var metric = { name: name, value: value};
 
-            // I know this looks weird, but not having an array when 
-            // there's only one item makes it easier to read the metric
-            // when it's logged to console.
-            if(_log[name] && _log[name] instanceof Array){
-                _log[name].push(metricObj);
-            }else if(_log[name]){
-                _log[name] = [_log[name], metricObj];
-            }else{
-                _log[name] = metricObj;
-            }
+            _log.push(metric);
 
             if(isStreaming){
-                _toConsole({ name: name, value: value});
+                _toConsole(metric);
             }
         },
 
@@ -55,7 +43,7 @@ define([
         },
 
         clear: function(){
-            _log = {};   
+            _log = [];   
         }
     };
 });

@@ -1,8 +1,10 @@
 define([
     "core/Timer",
+    "core/EventBus",
     "core/logging/Logger",
 ],function(
     Timer, 
+    EventBus,
     Logger
 ){
 
@@ -33,12 +35,8 @@ define([
                 var hostConfig = hostConfigs[h],
                     host = HostFactory.get(hostConfig);
 
-                this._clock.addWatcher(host);
-
                 loadBalancer.addHost(host);
             }
-
-            this._clock.addWatcher(loadBalancer);
 
             this._clusters.push(loadBalancer);
         }
@@ -55,10 +53,10 @@ define([
     SimulationEngine.prototype = {
         start: function(){
             Timer.start("simulation");
-            this._clock.start();
+            this._clock.startDES();
 
-            Logger.metric("simulation-real-time", Timer.end("simulation"));
-            Logger.metric("simulation-time", this._clock.getTime());
+            Logger.metric("simulation:real-execution-time", Timer.end("simulation"));
+            Logger.metric("simulation:execution-ticks", this._clock.getTime());
 
             Logger.toConsole();
         },
@@ -68,8 +66,6 @@ define([
         },
 
         destroy: function(){
-            this._clock.destroy();
-            Logger.clear();
 
             for(var c = 0; c < this._clusters.length; c++){
                 this._clusters[c].destroy();
@@ -79,9 +75,14 @@ define([
                 this._generators[g].destroy();
             }
 
+            this._clock.destroy();
+
             this._clock = undefined;
             this._clusters = undefined;
             this._generators = undefined;
+
+            Logger.clear();
+            EventBus.clear();
         }
     };
 
