@@ -32,7 +32,7 @@ define([
                     this._processing[processingComplete] = [message];
                 }
 
-                Logger.activity(this.getName() + " will be done processing " + message.getName() + " at " + this._processingComplete);
+                Logger.activity(this.getName() + " will be done processing " + message.getName() + " at " + processingComplete);
             }
         },
 

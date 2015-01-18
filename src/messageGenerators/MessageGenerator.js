@@ -49,7 +49,7 @@ define([
                 nextEmission  = tick + 1;
             }
 
-            EventBus.publish("register-clock-event", {
+            EventBus.publish("register-clock-action", {
                 tick: nextEmission,
                 action: this.generateMessage.bind(this)
             });

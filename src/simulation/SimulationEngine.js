@@ -48,6 +48,9 @@ define([
 
             this._clock.addWatcher(generator);
         }
+
+        // Calculate the longest possible wait time for the simulation
+        // if we pass that, sim is done? May be good enough for now...
     }
 
     SimulationEngine.prototype = {

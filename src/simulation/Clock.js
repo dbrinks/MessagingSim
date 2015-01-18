@@ -12,7 +12,7 @@ define([
         this._watchers = [];
         this._continue = true;
 
-        this._events = {};
+        this._actions = {};
         this._tickQueue = [];
 
         this._bindEvents();
@@ -21,16 +21,16 @@ define([
     Clock.prototype = {
 
         _bindEvents: function(){
-            EventBus.subscribe("register-clock-event", this.registerEvent.bind(this));
+            EventBus.subscribe("register-clock-action", this.registerEvent.bind(this));
         },
 
         registerEvent: function(event){
-            var registeredEvent = this._events[event.tick];
+            var registeredEvent = this._actions[event.tick];
 
             if(registeredEvent){
                 registeredEvent.push(event.action);
             }else{  
-                this._events[event.tick] = [event.action];
+                this._actions[event.tick] = [event.action];
                 this._tickQueue.push(event.tick);
 
                 // definitely a more efficient way of doing this.  
@@ -41,27 +41,27 @@ define([
 
         startDES: function(){
             var tick = this._tickQueue.shift(),
-                actions = this._events[tick];
+                actions = this._actions[tick];
 
-            
+            var callback = function(){
+                console.log("run after " + (tick * MS_PER_TICK));
+            };
 
             for(var i = 0; i < actions.length; i++){
-                setTimeout(function(){
-
-                }, tick * MS_PER_TICK);
+                setTimeout(callback, tick * MS_PER_TICK);
             }
 
-            delete this._events[tick];
+            delete this._actions[tick];
         },
 
         nextTime: function(time){
-            var actions = this._events[time];
+            var actions = this._actions[time];
 
             for(var i = 0; i < actions.length; i++){
                 actions[i]();
             }
 
-            delete this._events[time];
+            delete this._actions[time];
         },
 
         _tick: function(){
