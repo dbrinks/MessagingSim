@@ -3,6 +3,7 @@ define([
 ],function(
     EventBus
 ){
+
     var _log = [],
         isLogging = false,
         isLoggingToConsole = false,

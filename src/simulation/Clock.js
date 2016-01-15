@@ -25,17 +25,20 @@ define([
         },
 
         registerEvent: function(event){
-            var registeredEvent = this._actions[event.tick];
+            var tick = event.tick,
+                action = event.action,
+                registeredEvent = this._actions[tick];
 
             if(registeredEvent){
-                registeredEvent.push(event.action);
+                registeredEvent.push(action);
             }else{  
-                this._actions[event.tick] = [event.action];
-                this._tickQueue.push(event.tick);
+                this._actions[tick] = [action];
 
-                // definitely a more efficient way of doing this.  
-                // But this works for now
-                this._tickQueue = this._tickQueue.sort();
+                if(this._tickQueue.indexOf(tick) === -1){
+                    this._tickQueue.push(tick);
+
+                    this._tickQueue = this._tickQueue.sort();
+                }
             }
         },
 
@@ -43,15 +46,11 @@ define([
             var tick = this._tickQueue.shift(),
                 actions = this._actions[tick];
 
-            var callback = function(){
-                console.log("run after " + (tick * MS_PER_TICK));
-            };
-
             for(var i = 0; i < actions.length; i++){
-                setTimeout(callback, tick * MS_PER_TICK);
+                setTimeout(actions[i], tick * MS_PER_TICK);
             }
 
-            delete this._actions[tick];
+            this._actions[tick] = null;
         },
 
         nextTime: function(time){
@@ -61,7 +60,7 @@ define([
                 actions[i]();
             }
 
-            delete this._actions[time];
+            this._actions[time] = null;
         },
 
         _tick: function(){

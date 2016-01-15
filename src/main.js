@@ -47,7 +47,7 @@ function(
             currentSim.destroy();
         }
 
-        // Finish off the event before starting.  Avoids locking up the screen
+        // Finish off the current event before starting.  Avoids locking up the screen
         setTimeout(function(){
             currentSim = SimulationEngineFactory.get(configuration);
 

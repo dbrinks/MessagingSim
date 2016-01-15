@@ -30,10 +30,20 @@ define([
                     this._processing[processingComplete].push(message);
                 }else{
                     this._processing[processingComplete] = [message];
+
+                    // Only need to register one action
+                    EventBus.publish("register-clock-action", {
+                        tick: processingComplete,
+                        action: this.processMessage.bind(this)
+                    });
                 }
 
                 Logger.activity(this.getName() + " will be done processing " + message.getName() + " at " + processingComplete);
             }
+        },
+
+        processMessage: function(tick){
+
         },
 
         getName: function(){
@@ -42,6 +52,8 @@ define([
 
         addMessage: function(message){
             this._messageQueue.add(message);
+
+            this._beginProcessingNextMessage();
 
             Logger.activity(message.getName() + " has been added to the queue of " + this.getName());
         },

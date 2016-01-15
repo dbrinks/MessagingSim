@@ -7,7 +7,6 @@ define([
     ActivityLog,
     MetricsLog
 ){
-
     var isLogging = false,
         isLoggingToConsole = true,
         isStreaming = false;
@@ -41,8 +40,8 @@ define([
             ActivityLog.log(log);
         },
 
-        metric: function(name, value, extraProperties){
-            MetricsLog.log(name, value, extraProperties);
+        metric: function(name, value){
+            MetricsLog.log(name, value);
         },
 
         toConsole: function(){
